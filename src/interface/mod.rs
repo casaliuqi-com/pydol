@@ -1,3 +1,4 @@
 mod window;
-pub mod event_loop;
-pub use event_loop::run;
+mod xml;
+pub(crate) mod event_loop;
+pub(crate) use event_loop::run;
