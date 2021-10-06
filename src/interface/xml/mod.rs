@@ -1,4 +1,10 @@
 use std::collections::HashMap;
+use std::path::Path;
+use std::fs;
+use std::ffi::OsStr;
+use std::convert::TryFrom;
+
+use regex;
 
 #[cfg(test)]
 mod tests;
@@ -54,12 +60,98 @@ enum Event {
     Blur,
 }
 
-struct Page {
-}
-
 struct Component {
     name: String,
     component_type: ComponentType,
     position: (PositionType, u32, u32, u32, u32),
-    events: HashMap<Event, String>
+    events: HashMap<Event, String>,
+    children: Vec<Component>
+}
+
+impl Component {
+    #[cfg(debug_assertions)]
+    fn load_core(path: &Path) -> Option<String> {
+        if let Ok(r) = fs::read_to_string(path) {
+            Some(r)
+        } else {
+            None
+        }
+    }
+    
+    #[cfg(not(debug_assertions))]
+    fn load_core(path: &Path) -> Option<String> {
+        if let Some(p) = path.to_str() {
+            Some(include_str!(p).to_string())
+        } else {
+            None
+        }
+    }
+    
+    pub fn load(path: impl AsRef<Path>, name: impl Into<Option<&'static str>>) -> Option<Self> {
+        let path = path.as_ref();
+        let (name, component) = (
+            name.into().unwrap_or(
+                path.file_name()
+                    .unwrap_or(OsStr::new(""))
+                    .to_str()
+                    .unwrap_or("")
+            ),
+            Self::load_core(path)
+        );
+        if let Some(c) = component {
+            if let Ok(r) = Self::try_from(c) {
+                return Some(r);
+            }
+        }
+        None
+    }
+}
+
+enum Token {
+    At, // @
+    Apostrophe, // '
+    Quotes, // "
+    Colon, // :
+    Backslash, // \
+    EqualSign,   // =
+    LeftBrackets, // <
+    RightBrackets, // >
+    Text(String),
+}
+
+fn string2token_list(stream: String) -> Vec<Token> {
+    let mut result: Vec<Token> = Vec::new();
+    let mut last = "".to_string();
+    for c in stream.as_str().chars() {
+        match c {
+            '@'|'\''|'"'|
+            ':'|'\\'|'='|
+            '<'|'>' => {
+                result.push(Token::Text(last));
+                last = "".to_string();
+            }
+            _ => last = format!("{}{}", last, c),
+        }
+        match c {
+            '@' => result.push(Token::At),
+            '\'' => result.push(Token::Apostrophe),
+            '"' => result.push(Token::Quotes),
+            ':' => result.push(Token::Colon),
+            '\\' => result.push(Token::Backslash),
+            '=' => result.push(Token::EqualSign),
+            '<' => result.push(Token::LeftBrackets),
+            '>' => result.push(Token::RightBrackets),
+            _ => {}
+        }
+    }
+    result.push(Token::Text(last));
+    result
+}
+
+impl TryFrom<String> for Component {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        string2token_list(value);
+        unimplemented!();
+    }
 }
