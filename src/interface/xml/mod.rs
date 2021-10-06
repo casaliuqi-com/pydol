@@ -151,7 +151,7 @@ fn string2token_list(stream: String) -> Vec<Token> {
 impl TryFrom<String> for Component {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, Self::Error> {
-        string2token_list(value)
+        string2token_list(value);
         unimplemented!();
     }
 }
