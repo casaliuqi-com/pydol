@@ -122,7 +122,7 @@ enum Token {
 fn string2token_list(stream: String) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();
     let mut last = "".to_string();
-    stream.as_str().chars().for_each(|c| {
+    for c in stream.as_str().chars() {
         match c {
             '@'|'\''|'"'|
             ':'|'\\'|'='|
@@ -143,7 +143,7 @@ fn string2token_list(stream: String) -> Vec<Token> {
             '>' => result.push(Token::RightBrackets),
             _ => {}
         }
-    });
+    }
     result.push(Token::Text(last));
     result
 }
