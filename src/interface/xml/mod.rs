@@ -29,8 +29,15 @@ impl PositionType {
     pub fn to_rect(&self, width: u32, height: u32, param1: u32, 
     param2: u32, param3: u32, param4: u32) -> (u32, u32, u32, u32) {
         match self {
-            PositionType::TopLeftBottomRight => (param2, param1, width - param4, height - param3),
+            PositionType::BottomRightWidthHeight => (param2 - param3, param1 - param4, param2, param1),
+            PositionType::LeftBottomRightHeight => (param1, param2 - param4, param3, param2),
+            PositionType::LeftBottomWidthHeight => (param1, param2 - param4, param1 + param3, param2),
+            PositionType::TopBottomRightWidth => (param3 - param4, param1, param3, param2),
+            PositionType::TopLeftBottomRight => (param2, param1, param4, param3),
+            PositionType::TopLeftBottomWidth => (param2, param1, param2 + param4, param3),
+            PositionType::TopLeftRightHeight => (param2, param1, param3, param1 + param4),
             PositionType::TopLeftWidthHeight => (param2, param1, param2 + param3, param1 + param4),
+            PositionType::TopRightWidthHeight => (param2 - param3, param1, param2, param1 + param4),
             // Silakan kontributor baru coba: 
             // Returnan ialah tupel(atau tuple dalam Inggris) yang dibuat oleh x1, y1, x2 dan y2
             // x1 dan y1 adalah koordinat ujung kiri atas, 
