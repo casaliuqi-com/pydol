@@ -14,13 +14,15 @@ mod tests;
 //    dan LeftBottomWidthHeight
 // 2. Urutan leksikografis(A ke Z)
 enum PositionType {
+    BottomRightWidthHeight,
+    LeftBottomRightHeight,
+    LeftBottomWidthHeight,
+    TopBottomRightWidth,
     TopLeftBottomRight,
+    TopLeftBottomWidth,
+    TopLeftRightHeight,
     TopLeftWidthHeight,
     TopRightWidthHeight,
-    TopLeftBottomWidth,
-    TopBottomRightWidth,
-    TopLeftRightHeight,
-    LeftBottomRightHeight,
 }
 
 impl PositionType {
