@@ -14,15 +14,16 @@ mod tests;
 //    dan LeftBottomWidthHeight
 // 2. Urutan leksikografis(A ke Z)
 enum PositionType {
+    BottomRightWidthHeight,
+    LeftBottomRightHeight,
+    LeftBottomWidthHeight,
+    TopBottomRightWidth,
     TopLeftBottomRight,
+    TopLeftBottomWidth,
+    TopLeftRightHeight,
     TopLeftWidthHeight,
     TopRightWidthHeight,
-    TopLeftBottomWidth,
-    TopBottomRightWidth,
-    TopLeftRightHeight,
-    LeftBottomRightHeight,
 }
-
 impl PositionType {
     #[inline]
     pub fn to_rect(&self, width: u32, height: u32, param1: u32, 
